@@ -97,9 +97,7 @@ bool simulate_projectile(const double magnitude, const double angle,
       y = v0_y * t  - 0.5 * g * t * t;
       x = v0_x * t;
     }
-
   }
-
   return hit_target;
 }
 
@@ -109,7 +107,39 @@ void merge_telemetry(double **telemetries,
                      double* &telemetry,
                      int &telemetry_current_size,
                      int &telemetry_max_size) {
-  for(int i = 0;;i++){
 
+  for (int j = 0; j < tot_telemetries; j++) {
+    for (int k = 0; k < telemetries_sizes[j]; k++) {
+        telemetry = append_to_array(telemetries[j][k], telemetry, telemetry_current_size, telemetry_max_size);
+    }
+  }
+
+  double tmp;
+  int tot = 0;
+  for (int j = 0; j < tot_telemetries; j++) {
+      tot += telemetries_sizes[j];
+  }
+  //std::cout<< tot << std::endl;
+  //for(int i = 0; i < tot; i++) {
+  //    std::cout << telemetry[i] << std::endl;
+  //}
+ // std::cout<< "broke here" << std::endl;
+  for(int i = 0; i < tot; i += 3){
+      for(int j = 0; j < tot - i - 3; j+=3){
+          if(telemetry[j] > telemetry[j+3]) {
+              //std::cout<< "still working" << std::endl;
+             // std::cout<< i << std::endl;
+              //std::cout<< j << std::endl;
+              tmp = telemetry[j + 3];
+              telemetry[j + 3] = telemetry[j];
+              telemetry[j] = tmp;
+              tmp = telemetry[j + 4];
+              telemetry[j + 4] = telemetry[j+ 1];
+              telemetry[j + 1] = tmp;
+              tmp = telemetry[j + 5];
+              telemetry[j + 5] = telemetry[j+ 2];
+              telemetry[j + 2] = tmp;
+          }
+      }
   }
 }
